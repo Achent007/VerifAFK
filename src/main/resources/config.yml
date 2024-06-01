@@ -1,0 +1,5 @@
+afk-message: "&eVeuillez confirmer votre présence!"
+afk-sound: "ENTITY_PLAYER_LEVELUP"
+afk-title: "&cAFK Check!"
+afk-subtitle: "&eÊtes-vous là?"
+Staff confirmation: "{prefix} &aVérification envoyée à &e{player}&a."

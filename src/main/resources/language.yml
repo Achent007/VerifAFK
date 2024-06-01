@@ -1,0 +1,6 @@
+prefix: "&4[&cVerifAFK&4]"
+Reloaded: "{prefix} &aConfiguration reloaded."
+NoPermission: "{prefix} &cYou don't have the permission."
+Invalid_sound: "{prefix} &cInvalid Sound in the config. Please report it to the administrators."
+Incorrect_usage: "{prefix} &6Usage: /verifafk <pseudo>"
+Player_offline: "{prefix} &cThe player {player} is offline"
