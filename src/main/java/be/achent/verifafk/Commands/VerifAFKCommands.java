@@ -27,7 +27,7 @@ public class VerifAFKCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("verifafk.reload")) {
-                sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("NoPermission")));
+                sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("No Permission")));
                 return true;
             }
             plugin.reloadConfig();
