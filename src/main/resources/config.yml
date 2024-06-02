@@ -12,5 +12,5 @@ Presence confirmed: "{prefix} &aPresence confirmed."
 Verification sound: "ENTITY_PLAYER_LEVELUP"
 
 # Settings of the title shown to the player.
-verification title: "&cAFK Check!"
-verification subtitle: "&eClick on the message on the chat."
+Verification title: "&cAFK Check!"
+Verification subtitle: "&eClick on the message on the chat."
