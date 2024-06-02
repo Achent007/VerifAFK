@@ -33,7 +33,7 @@ public class VerifAFKConfirmCommand implements CommandExecutor {
 
         Player initiator = plugin.getVerifInitiator(player);
         if (initiator != null) {
-            initiator.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Player make the confirmation").replace("{player}", sender.getName())));
+            initiator.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Player make the confirmation")).replace("{player}", player.getName()));
             plugin.removeVerifInitiator(player);
         }
 

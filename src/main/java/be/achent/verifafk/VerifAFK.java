@@ -9,8 +9,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.permissions.PermissionAttachment;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public final class VerifAFK extends JavaPlugin implements Listener {
@@ -39,8 +41,8 @@ public final class VerifAFK extends JavaPlugin implements Listener {
         updateConfigFile("config.yml", "config-default.yml");
         updateConfigFile("language.yml", "language-default.yml");
 
-        getCommand("verifafk").setExecutor(new VerifAFKCommands(this));
-        getCommand("verifafkconfirm").setExecutor(new VerifAFKConfirmCommand(this));
+        Objects.requireNonNull(getCommand("verifafk")).setExecutor(new VerifAFKCommands(this));
+        Objects.requireNonNull(getCommand("verifafkconfirm")).setExecutor(new VerifAFKConfirmCommand(this));
     }
 
     public static VerifAFK getInstance() {
@@ -106,17 +108,48 @@ public final class VerifAFK extends JavaPlugin implements Listener {
         languageConfig = YamlConfiguration.loadConfiguration(languageFile);
     }
 
+    public void updateConfigFile(String configFile, String defaultConfigFile) {
+        File file = new File(getDataFolder(), configFile);
+        if (!file.exists()) {
+            saveResource(configFile, false);
+        } else {
+            FileConfiguration currentConfig = YamlConfiguration.loadConfiguration(file);
+            InputStream defaultStream = getResource(defaultConfigFile);
+            if (defaultStream != null) {
+                YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultStream));
+                boolean changed = false;
+
+                for (String key : defaultConfig.getKeys(true)) {
+                    if (!currentConfig.contains(key)) {
+                        currentConfig.set(key, defaultConfig.get(key));
+                        changed = true;
+                    }
+                }
+
+                if (changed) {
+                    try {
+                        currentConfig.save(file);
+                    } catch (IOException e) {
+                        getLogger().log(Level.SEVERE, "Could not save config to " + file, e);
+                    }
+                }
+            }
+        }
+    }
+
     public String formatMessage(String message) {
         if (message == null) {
             return "";
         }
         String prefix = this.languageConfig.getString("messages.prefix");
+        assert prefix != null;
         message = message.replace("{prefix}", prefix);
         return ChatColorHandler.translateAlternateColorCodes(message, List.of(PlaceholderAPIParser.class, MiniMessageParser.class));
     }
 
-    public void addTemporaryPermission(Player player, String permission) {
-        PermissionAttachment attachment = player.addAttachment(this, 600); // 600 ticks = 30 seconds
+    public void addTemporaryPermission(Player player, String permission, int duration) {
+        PermissionAttachment attachment = player.addAttachment(this, duration);
+        assert attachment != null;
         attachment.setPermission(permission, true);
         playerPermissions.put(player, attachment);
     }
@@ -139,33 +172,5 @@ public final class VerifAFK extends JavaPlugin implements Listener {
 
     public void removeVerifInitiator(Player target) {
         verifInitiators.remove(target);
-    }
-
-    private void updateConfigFile(String fileName, String defaultFileName) {
-        File configFile = new File(getDataFolder(), fileName);
-        if (!configFile.exists()) {
-            saveResource(fileName, false);
-            return;
-        }
-
-        FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-        InputStream defaultConfigStream = getResource(defaultFileName);
-        if (defaultConfigStream == null) {
-            getLogger().log(Level.SEVERE, "Default configuration file " + defaultFileName + " not found.");
-            return;
-        }
-
-        FileConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defaultConfigStream));
-        for (String key : defaultConfig.getKeys(true)) {
-            if (!config.contains(key)) {
-                config.set(key, defaultConfig.get(key));
-            }
-        }
-
-        try {
-            config.save(configFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

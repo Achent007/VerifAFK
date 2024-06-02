@@ -1,5 +1,5 @@
 # Message received on the chat cibled by the /verifafk command.
-# tooltip-message is the hover message of the afk-message.
+# Hover confirmation message is a message shown when the mous is on the Confirmation message.
 Confirmation message: "{prefix} &ePlease click here ton confirm your presence."
 Hover confirmation message: "&bClick here to confirm."
 Verification message: "{prefix} &aVerification send to &e{player}&a."
@@ -10,7 +10,16 @@ Presence confirmed: "{prefix} &aPresence confirmed."
 # customisation of the sound played to the verified player.
 # All available sounds can be found there : https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
 Verification sound: "ENTITY_PLAYER_LEVELUP"
+Sound volume: 1.0
+Sound pitch: 1.0
 
 # Settings of the title shown to the player.
+# Durations are on ticks (20 ticks = 1 second)
 Verification title: "&cAFK Check!"
 Verification subtitle: "&eClick on the message on the chat."
+fade_in: 10
+stay: 70
+fade_out: 20
+
+# Time before player can't click on the verification message (20 ticks = 1 second)
+Expiry duration: 600

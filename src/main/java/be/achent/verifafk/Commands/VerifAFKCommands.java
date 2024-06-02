@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class VerifAFKCommands implements CommandExecutor {
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("messages.Verification offline player")).replace("{player}", args[0]));
+            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Verification offline player")).replace("{player}", args[0]));
             return false;
         }
 
@@ -64,23 +65,38 @@ public class VerifAFKCommands implements CommandExecutor {
         afkMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/verifafkconfirm " + sender.getName()));
         target.spigot().sendMessage(afkMessage);
 
-        try {
-            Sound afkSound = Sound.valueOf(sound);
-            target.playSound(target.getLocation(), afkSound, 1.0f, 1.0f);
-        } catch (IllegalArgumentException e) {
+        if (sound != null && !sound.isEmpty()) {
+            try {
+                Sound afkSound = Sound.valueOf(sound);
+                float volume = (float) plugin.getConfig().getDouble("Sound volume");
+                float pitch = (float) plugin.getConfig().getDouble("Sound pitch");
+                target.playSound(target.getLocation(), afkSound, volume, pitch);
+            } catch (IllegalArgumentException e) {
+                sender.sendMessage(plugin.getLanguageMessage("messages.Invalid sound"));
+                return false;
+            }
+        } else {
             sender.sendMessage(plugin.getLanguageMessage("messages.Invalid sound"));
             return false;
         }
 
+        int fadeIn = plugin.getConfig().getInt("fade_in");
+        int stay = plugin.getConfig().getInt("stay");
+        int fadeOut = plugin.getConfig().getInt("fade_out");
+
         target.sendTitle(
                 plugin.formatMessage(title),
                 plugin.formatMessage(subtitle),
-                10, 70, 20
+                fadeIn,
+                stay,
+                fadeOut
         );
 
         sender.sendMessage(plugin.formatMessage(successMessage).replace("{player}", target.getName()));
 
-        plugin.addTemporaryPermission(target, "verifafk.confirm");
+        int permissionDuration = plugin.getConfig().getInt("Expiry duration");
+        plugin.addTemporaryPermission(target, "verifafk.confirm", permissionDuration);
+
         plugin.addVerifInitiator(target, (Player) sender);
 
         return true;
