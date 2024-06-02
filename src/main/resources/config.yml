@@ -1,9 +1,16 @@
-afk-message: "{prefix} &ePlease click here ton confirm your presence."
-tooltip-message: "Click here to confirm."
-afk-sound: "ENTITY_PLAYER_LEVELUP"
-afk-title: "&cAFK Check!"
-afk-subtitle: "&eClick on the message on the chat."
-afk-success: "{prefix} &aVerification send to &e{player}&a."
-Player_present: "{prefix} &e{player} &amake the verification."
-Player_offline: "{prefix} &cThe player {player} is offline."
-Player_confirmed: "{prefix} &aPresence confirmed."
+# Message received on the chat cibled by the /verifafk command.
+# tooltip-message is the hover message of the afk-message.
+Confirmation message: "{prefix} &ePlease click here ton confirm your presence."
+Hover confirmation message: "&bClick here to confirm."
+Verification message: "{prefix} &aVerification send to &e{player}&a."
+Verification offline player: "{prefix} &cThe player {player} is offline."
+Player make the confirmation: "{prefix} &e{player} &amake the verification."
+Presence confirmed: "{prefix} &aPresence confirmed."
+
+# customisation of the sound played to the verified player.
+# All available sounds can be found there : https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+Verification sound: "ENTITY_PLAYER_LEVELUP"
+
+# Settings of the title shown to the player.
+verification title: "&cAFK Check!"
+verification subtitle: "&eClick on the message on the chat."

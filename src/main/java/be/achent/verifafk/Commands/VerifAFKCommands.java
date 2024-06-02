@@ -11,7 +11,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,28 +37,27 @@ public class VerifAFKCommands implements CommandExecutor {
         }
 
         if (args.length != 1) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Incorrect_usage")));
+            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Incorrect usage")));
             return false;
         }
 
         if (!sender.hasPermission("verifafk.use")) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("NoPermission")));
+            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("No Permission")));
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Player_offline")).replace("{player}", args[0]));
+            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Verification offline player")).replace("{player}", args[0]));
             return false;
         }
 
-        // Récupère les configurations du fichier config.yml
-        String message = plugin.getConfig().getString("afk-message");
-        String sound = plugin.getConfig().getString("afk-sound");
-        String title = plugin.getConfig().getString("afk-title");
-        String subtitle = plugin.getConfig().getString("afk-subtitle");
-        String successMessage = plugin.getConfig().getString("afk-success");
-        String tooltipMessage = plugin.getConfig().getString("tooltip-message");
+        String message = plugin.getConfig().getString("Confirmation message");
+        String sound = plugin.getConfig().getString("Verification sound");
+        String title = plugin.getConfig().getString("Verification title");
+        String subtitle = plugin.getConfig().getString("Verification subtitle");
+        String successMessage = plugin.getConfig().getString("Verification message");
+        String tooltipMessage = plugin.getConfig().getString("Hover confirmation message");
 
         TextComponent afkMessage = new TextComponent(plugin.formatMessage(message));
         afkMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(plugin.formatMessage(tooltipMessage)).create()));
@@ -70,7 +68,7 @@ public class VerifAFKCommands implements CommandExecutor {
             Sound afkSound = Sound.valueOf(sound);
             target.playSound(target.getLocation(), afkSound, 1.0f, 1.0f);
         } catch (IllegalArgumentException e) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Invalid_sound")));
+            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Invalid sound")));
             return false;
         }
 
