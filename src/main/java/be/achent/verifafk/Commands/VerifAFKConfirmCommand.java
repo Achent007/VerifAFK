@@ -17,34 +17,25 @@ public class VerifAFKConfirmCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Player only")));
+            sender.sendMessage(plugin.getLanguageMessage("messages.Player only"));
             return true;
         }
 
         Player player = (Player) sender;
-        if (args.length != 1) {
-            player.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Incorrect confirm usage")));
-            return false;
-        }
 
-        Player target = plugin.getServer().getPlayer(args[0]);
-        if (target == null) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Verification offline player")).replace("{player}", args[0]));
+        if (!player.hasPermission("verifafk.confirm")) {
+            player.sendMessage(plugin.getLanguageMessage("messages.Not under verification"));
             return true;
         }
 
-        if (plugin.isPlayerConfirmed(player)) {
-            player.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Already confirmed")));
-            return true;
+        plugin.removeTemporaryPermission(player, "verifafk.confirm");
+        player.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Presence confirmed")));
+
+        Player initiator = plugin.getVerifInitiator(player);
+        if (initiator != null) {
+            initiator.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Player make the confirmation").replace("{player}", sender.getName())));
+            plugin.removeVerifInitiator(player);
         }
-
-        String message = plugin.getConfig().getString("Player make the confirmation");
-        target.sendMessage(plugin.formatMessage(message).replace("{player}", player.getName()));
-
-        String confirmMessage = plugin.getConfig().getString("Presence confirmed");
-        player.sendMessage(plugin.formatMessage(confirmMessage));
-
-        plugin.confirmPlayer(player);
 
         return true;
     }

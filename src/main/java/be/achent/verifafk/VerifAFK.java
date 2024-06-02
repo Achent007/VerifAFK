@@ -9,15 +9,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.logging.Level;
 
 public final class VerifAFK extends JavaPlugin implements Listener {
@@ -26,7 +26,8 @@ public final class VerifAFK extends JavaPlugin implements Listener {
     private Messages messages;
     private FileConfiguration languageConfig;
     private File languageConfigFile;
-    private final Set<Player> confirmedPlayers = new HashSet<>();
+    private final Map<Player, PermissionAttachment> playerPermissions = new HashMap<>();
+    private final Map<Player, Player> verifInitiators = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -50,13 +51,20 @@ public final class VerifAFK extends JavaPlugin implements Listener {
         String message = this.messages.get().getString(path);
         if (message != null) {
             return formatMessage(message);
+        } else {
+            getLogger().warning("Message path '" + path + "' not found in messages.yml");
+            return "";
         }
-        return "";
     }
 
     public String getLanguageMessage(String path) {
         String message = this.languageConfig.getString(path);
-        return message != null ? formatMessage(message) : "";
+        if (message != null) {
+            return formatMessage(message);
+        } else {
+            getLogger().warning("Message path '" + path + "' not found in language.yml");
+            return "";
+        }
     }
 
     public void reloadMessages() {
@@ -107,16 +115,30 @@ public final class VerifAFK extends JavaPlugin implements Listener {
         return ChatColorHandler.translateAlternateColorCodes(message, List.of(PlaceholderAPIParser.class, MiniMessageParser.class));
     }
 
-    public void confirmPlayer(Player player) {
-        confirmedPlayers.add(player);
+    public void addTemporaryPermission(Player player, String permission) {
+        PermissionAttachment attachment = player.addAttachment(this, 600); // 600 ticks = 30 seconds
+        attachment.setPermission(permission, true);
+        playerPermissions.put(player, attachment);
     }
 
-    public boolean isPlayerConfirmed(Player player) {
-        return confirmedPlayers.contains(player);
+    public void removeTemporaryPermission(Player player, String permission) {
+        PermissionAttachment attachment = playerPermissions.get(player);
+        if (attachment != null) {
+            attachment.unsetPermission(permission);
+            playerPermissions.remove(player);
+        }
     }
 
-    public void removePlayerConfirmation(Player player) {
-        confirmedPlayers.remove(player);
+    public void addVerifInitiator(Player target, Player initiator) {
+        verifInitiators.put(target, initiator);
+    }
+
+    public Player getVerifInitiator(Player target) {
+        return verifInitiators.get(target);
+    }
+
+    public void removeVerifInitiator(Player target) {
+        verifInitiators.remove(target);
     }
 
     private void updateConfigFile(String fileName, String defaultFileName) {

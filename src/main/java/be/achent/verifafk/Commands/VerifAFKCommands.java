@@ -27,28 +27,28 @@ public class VerifAFKCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("verifafk.reload")) {
-                sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("No Permission")));
+                sender.sendMessage(plugin.getLanguageMessage("messages.No Permission"));
                 return true;
             }
             plugin.reloadConfig();
             plugin.reloadLanguageConfig();
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Reloaded")));
+            sender.sendMessage(plugin.getLanguageMessage("messages.Reloaded"));
             return true;
         }
 
         if (args.length != 1) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Incorrect usage")));
+            sender.sendMessage(plugin.getLanguageMessage("messages.Incorrect usage"));
             return false;
         }
 
         if (!sender.hasPermission("verifafk.use")) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("No Permission")));
+            sender.sendMessage(plugin.getLanguageMessage("messages.No Permission"));
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Verification offline player")).replace("{player}", args[0]));
+            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("messages.Verification offline player")).replace("{player}", args[0]));
             return false;
         }
 
@@ -68,7 +68,7 @@ public class VerifAFKCommands implements CommandExecutor {
             Sound afkSound = Sound.valueOf(sound);
             target.playSound(target.getLocation(), afkSound, 1.0f, 1.0f);
         } catch (IllegalArgumentException e) {
-            sender.sendMessage(plugin.formatMessage(plugin.getConfig().getString("Invalid sound")));
+            sender.sendMessage(plugin.getLanguageMessage("messages.Invalid sound"));
             return false;
         }
 
@@ -79,6 +79,9 @@ public class VerifAFKCommands implements CommandExecutor {
         );
 
         sender.sendMessage(plugin.formatMessage(successMessage).replace("{player}", target.getName()));
+
+        plugin.addTemporaryPermission(target, "verifafk.confirm");
+        plugin.addVerifInitiator(target, (Player) sender);
 
         return true;
     }

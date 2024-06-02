@@ -6,7 +6,7 @@ commands:
   verifafk:
     description: Main Command
   verifafkconfirm:
-    description: Command executed ton confirm
+    description: Command executed to confirm
 permissions:
   verifafk.*:
     description: Give all permissions
@@ -15,6 +15,9 @@ permissions:
       verifafk.reload: true
   verifafk.use:
     description: Permission to use the verification system
+    default: op
+  verifafk.confirm:
+    description: Permission to use the confirmation system
     default: op
   verifafk.reload:
     description: Permission for the reload command
