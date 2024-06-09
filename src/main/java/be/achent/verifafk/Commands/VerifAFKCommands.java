@@ -20,7 +20,6 @@ import java.util.Set;
 public class VerifAFKCommands implements CommandExecutor {
 
     private final VerifAFK plugin;
-    private final Set<Player> confirmedPlayers = new HashSet<>();
     private final Random random = new Random();
 
     public VerifAFKCommands(VerifAFK plugin) {
@@ -31,7 +30,7 @@ public class VerifAFKCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("verifafk.reload")) {
-                sender.sendMessage(plugin.getLanguageMessage("messages.No permission"));
+                sender.sendMessage(plugin.getLanguageMessage("messages.No Permission"));
                 return true;
             }
             plugin.reloadConfig();
