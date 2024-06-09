@@ -8,3 +8,4 @@ messages:
   Incorrect confirm usage: "{prefix} &6Usage: /verifafkconfirm <staff>"
   Already confirmed: "{prefix} &cYou have already confirmed your presence."
   Not under verification: "{prefix} &cYou are not under a verification."
+  No confirmation messages: "{prefix} &cConfirmation message are not defined on config.yml."

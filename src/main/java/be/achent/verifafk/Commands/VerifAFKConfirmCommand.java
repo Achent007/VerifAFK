@@ -17,7 +17,7 @@ public class VerifAFKConfirmCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(plugin.getLanguageMessage("messages.Player only"));
+            sender.sendMessage(plugin.getLanguageMessage("messages.Not a player"));
             return true;
         }
 

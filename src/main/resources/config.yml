@@ -1,6 +1,8 @@
 # Message received on the chat cibled by the /verifafk command.
 # Hover confirmation message is a message shown when the mouse is on the Confirmation message.
-Confirmation message: "{prefix} &ePlease click here ton confirm your presence."
+Confirmations messages:
+  - "{prefix} &ePlease click here ton confirm your presence."
+  - "{prefix} &ePlease click here ton confirm your presence. (second message)"
 Hover confirmation message: "&bClick here to confirm."
 Verification message: "{prefix} &aVerification send to &e{player}&a."
 Verification offline player: "{prefix} &cThe player {player} is offline."

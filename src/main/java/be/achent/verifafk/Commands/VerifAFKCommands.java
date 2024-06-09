@@ -13,12 +13,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class VerifAFKCommands implements CommandExecutor {
 
     private final VerifAFK plugin;
     private final Set<Player> confirmedPlayers = new HashSet<>();
+    private final Random random = new Random();
 
     public VerifAFKCommands(VerifAFK plugin) {
         this.plugin = plugin;
@@ -28,7 +31,7 @@ public class VerifAFKCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
             if (!sender.hasPermission("verifafk.reload")) {
-                sender.sendMessage(plugin.getLanguageMessage("messages.No Permission"));
+                sender.sendMessage(plugin.getLanguageMessage("messages.No permission"));
                 return true;
             }
             plugin.reloadConfig();
@@ -53,7 +56,14 @@ public class VerifAFKCommands implements CommandExecutor {
             return false;
         }
 
-        String message = plugin.getConfig().getString("Confirmation message");
+        List<String> messages = plugin.getConfig().getStringList("Confirmations messages");
+        if (messages.isEmpty()) {
+            sender.sendMessage(plugin.getLanguageMessage("messages.No confirmation messages"));
+            return false;
+        }
+
+        String message = messages.get(random.nextInt(messages.size()));
+
         String sound = plugin.getConfig().getString("Verification sound");
         String title = plugin.getConfig().getString("Verification title");
         String subtitle = plugin.getConfig().getString("Verification subtitle");
@@ -65,31 +75,20 @@ public class VerifAFKCommands implements CommandExecutor {
         afkMessage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/verifafkconfirm " + sender.getName()));
         target.spigot().sendMessage(afkMessage);
 
-        if (sound != null && !sound.isEmpty()) {
-            try {
-                Sound afkSound = Sound.valueOf(sound);
-                float volume = (float) plugin.getConfig().getDouble("Sound volume");
-                float pitch = (float) plugin.getConfig().getDouble("Sound pitch");
-                target.playSound(target.getLocation(), afkSound, volume, pitch);
-            } catch (IllegalArgumentException e) {
-                sender.sendMessage(plugin.getLanguageMessage("messages.Invalid sound"));
-                return false;
-            }
-        } else {
+        try {
+            Sound afkSound = Sound.valueOf(sound);
+            target.playSound(target.getLocation(), afkSound, (float) plugin.getConfig().getDouble("Sound volume"), (float) plugin.getConfig().getDouble("Sound pitch"));
+        } catch (IllegalArgumentException e) {
             sender.sendMessage(plugin.getLanguageMessage("messages.Invalid sound"));
             return false;
         }
 
-        int fadeIn = plugin.getConfig().getInt("fade_in");
-        int stay = plugin.getConfig().getInt("stay");
-        int fadeOut = plugin.getConfig().getInt("fade_out");
-
         target.sendTitle(
                 plugin.formatMessage(title),
                 plugin.formatMessage(subtitle),
-                fadeIn,
-                stay,
-                fadeOut
+                plugin.getConfig().getInt("Title fadeIn"),
+                plugin.getConfig().getInt("Title stay"),
+                plugin.getConfig().getInt("Title fadeOut")
         );
 
         sender.sendMessage(plugin.formatMessage(successMessage).replace("{player}", target.getName()));
