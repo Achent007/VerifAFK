@@ -48,16 +48,6 @@ public final class VerifAFK extends JavaPlugin implements Listener {
         return plugin;
     }
 
-    public String getMessage(String path) {
-        String message = this.messages.get().getString(path);
-        if (message != null) {
-            return formatMessage(message);
-        } else {
-            getLogger().warning("Message path '" + path + "' not found in messages.yml");
-            return "";
-        }
-    }
-
     public String getLanguageMessage(String path) {
         String message = this.languageConfig.getString(path);
         if (message != null) {
