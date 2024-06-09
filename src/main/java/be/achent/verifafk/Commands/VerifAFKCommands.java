@@ -100,16 +100,4 @@ public class VerifAFKCommands implements CommandExecutor {
 
         return true;
     }
-
-    public void confirmPlayer(Player player) {
-        confirmedPlayers.add(player);
-    }
-
-    public boolean isPlayerConfirmed(Player player) {
-        return confirmedPlayers.contains(player);
-    }
-
-    public void removePlayerConfirmation(Player player) {
-        confirmedPlayers.remove(player);
-    }
 }
