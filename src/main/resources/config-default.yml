@@ -19,9 +19,9 @@ Sound pitch: 1.0
 # Durations are on ticks (20 ticks = 1 second)
 Verification title: "&cAFK Check!"
 Verification subtitle: "&eClick on the message on the chat."
-fade_in: 10
-stay: 70
-fade_out: 20
+Title fade_in: 10
+Title stay: 70
+Title fade_out: 20
 
 # Time before player can't click on the verification message (20 ticks = 1 second)
 Expiry duration: 600
