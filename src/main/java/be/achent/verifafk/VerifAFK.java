@@ -5,13 +5,13 @@ import be.achent.verifafk.ChatColorHandler.parsers.custom.MiniMessageParser;
 import be.achent.verifafk.ChatColorHandler.parsers.custom.PlaceholderAPIParser;
 import be.achent.verifafk.Commands.VerifAFKCommands;
 import be.achent.verifafk.Commands.VerifAFKConfirmCommand;
+import be.achent.verifafk.Commands.VerifAFKTabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.permissions.PermissionAttachment;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,6 +41,7 @@ public final class VerifAFK extends JavaPlugin implements Listener {
         updateConfigFile("language.yml", "language-default.yml");
 
         getCommand("verifafk").setExecutor(new VerifAFKCommands(this));
+        getCommand("verifafk").setTabCompleter(new VerifAFKTabCompleter());
         getCommand("verifafkconfirm").setExecutor(new VerifAFKConfirmCommand(this));
     }
 
